@@ -85,7 +85,7 @@ process.on('SIGTERM', (code, signal) => {
 // debug use - event handler for ctrl + c
 process.on('SIGINT', (code, signal) => {
     console.log(`[recording process] exited with code ${code} and signal ${signal}(SIGINT)`)
-    process.kill('SIGTERM');
+    process.kill(transcodeStreamToOutput.pid, 'SIGTERM');
 });
 
 process.on('exit', function(code) {
