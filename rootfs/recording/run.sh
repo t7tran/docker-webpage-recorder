@@ -5,7 +5,6 @@
 
 set -xeo pipefail
 
-BROWSER_URL="${MEETING_URL}&record=true"
 SCREEN_WIDTH=${RECORDING_SCREEN_WIDTH:-'1280'}
 SCREEN_HEIGHT=${RECORDING_SCREEN_HEIGHT:-'720'}
 SCREEN_RESOLUTION=${SCREEN_WIDTH}x${SCREEN_HEIGHT}
@@ -61,7 +60,7 @@ firefox \
   --first-startup \
   --foreground \
   --kiosk \
-  --ssb ${BROWSER_URL} \
+  --ssb ${RECORDING_URL} \
   &
 sleep 0.5  # Ensure this has started before moving on
 xdotool mousemove 1 1 click 1  # Move mouse out of the way so it doesn't trigger the "pause" overlay on the video tile

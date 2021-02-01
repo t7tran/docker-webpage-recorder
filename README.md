@@ -8,7 +8,7 @@ The initial code base is heavily borrowed from https://github.com/aws-samples/am
 
 Prepare `.env` file with the following:
 
-	MEETING_URL=https://the.website.to.record.com
+	RECORDING_URL=https://the.website.to.record.com
 	RECORDING_ARTIFACTS_BUCKET=s3-bucket-name
 	AWS_ACCESS_KEY_ID=AWSACCESSKEYIDINHERE
 	AWS_SECRET_ACCESS_KEY=ENTERTHEAWSSECRETACCESSKEYINTHISPOSITION

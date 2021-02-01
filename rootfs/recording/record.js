@@ -4,8 +4,8 @@
 const { spawn } = require('child_process');
 const { S3Uploader } = require('./utils/upload');
 
-const MEETING_URL = process.env.MEETING_URL || 'Not present in environment';
-console.log(`[recording process] MEETING_URL: ${MEETING_URL}`);
+const RECORDING_URL = process.env.RECORDING_URL || 'Not present in environment';
+console.log(`[recording process] RECORDING_URL: ${RECORDING_URL}`);
 
 const args = process.argv.slice(2);
 const BUCKET_NAME = args[0];
