@@ -32,7 +32,7 @@ Then start recording:
 	  --env-file .env \
 	  --shm-size=1g \
 	  -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket \
-	  coolersport/webpage-recorder:1.1
+	  t7tran/webpage-recorder:1.1
 
 To stop recording, run the following in another terminal:
 
