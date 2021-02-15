@@ -52,7 +52,8 @@ user_pref("permissions.default.microphone", 1);
 user_pref("permissions.default.camera", 1);
 user_pref("media.devices.insecure.enabled", true);
 user_pref("media.getusermedia.insecure.enabled", true);
-user_pref("devtools.toolbox.selectedTool", "webconsole");
+user_pref("devtools.toolbox.selectedTool", "${FF_DEVTOOLS_TAB:-webconsole}");
+user_pref("browser.sessionstore.interval", ${FF_SESSIONSTORE_INTERVAL:-15000});
 EOF
 
 # Start Firefox browser and point it at the URL we want to capture
@@ -69,8 +70,8 @@ firefox \
   --first-startup \
   --foreground \
   --kiosk \
-  ${SHOW_DEVTOOLS:+--devtools} \
-  ${SHOW_JSCONSOLE:+--jsconsole} \
+  ${FF_DEVTOOLS_VISIBLE:+--devtools} \
+  ${FF_JSCONSOLE_VISIBLE:+--jsconsole} \
   --ssb ${RECORDING_URL} \
   &
 sleep 0.5  # Ensure this has started before moving on
