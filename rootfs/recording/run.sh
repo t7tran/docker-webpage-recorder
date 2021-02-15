@@ -24,6 +24,7 @@ pacmd set-default-source v1.monitor  # Set the monitor of the v1 sink to be the 
 
 # Start X11 virtual framebuffer so Firefox will have somewhere to draw
 Xvfb :${X_SERVER_NUM} -ac -screen 0 ${SCREEN_RESOLUTION}x${COLOR_DEPTH} > /dev/null 2>&1 &
+XVFB_PID=$!
 export DISPLAY=:${X_SERVER_NUM}.0
 sleep 0.5  # Ensure this has started before moving on
 
@@ -74,38 +75,77 @@ firefox \
   ${FF_JSCONSOLE_VISIBLE:+--jsconsole} \
   --ssb ${RECORDING_URL} \
   &
+
+FF_PID=$!
+echo Firefox PID $FF_PID
 sleep 0.5  # Ensure this has started before moving on
 xdotool mousemove 1 1 click 1  # Move mouse out of the way so it doesn't trigger the "pause" overlay on the video tile
+
+SIGNALS='SIGHUP SIGINT SIGQUIT SIGTERM'
+_terminating() {
+	trap - $SIGNALS 
+
+	sleep ${FF_SHUTDOWN_GRACE:-3} &
+	SLEEP_PID=$!
+
+	echo Shutdown Firefox $FF_PID
+	kill $FF_PID
+	kill $XVFB_PID
+
+	wait $SLEEP_PID
+	echo Terminated
+}
+trap _terminating $SIGNALS
 
 [[ -z "$START_HASH" && -z "$STOP_HASH" && -z "$EXIT_HASH" ]] &&  
 	exec node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT}
 
 set +x
 
-SESSION_FILE=/tmp/foo4/sessionstore-backups/recovery.jsonlz4
-for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE ]] && break || sleep 1; done
-[[ ! -f $SESSION_FILE ]] && echo Firefox session file $SESSION_FILE not found && exit 1
+REC_PID=
+SHUTTINGDOWN=
 
-PID=
-while true; do
+start() {
+	[[ -n "$REC_PID" || -n "$SHUTTINGDOWN" ]] && return
+	echo Start recording
+	node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT} &
+	REC_PID=$!
+}
+stop() {
+	[[ -z "$REC_PID" ]] && return
+	echo Stop recording $REC_PID
+	kill -TERM $REC_PID
+	wait $REC_PID
+	REC_PID=
+}
+_shutdown() {
+	trap - $SIGNALS
+
+	echo Shutting down
+	SHUTTINGDOWN=yes
+	stop
+	
+	_terminating
+}
+
+trap _shutdown $SIGNALS
+
+SESSION_FILE=/tmp/foo4/sessionstore-backups/recovery.jsonlz4
+for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE || -n "$SHUTTINGDOWN" ]] && break || sleep 1; done
+[[ ! -f $SESSION_FILE && -z "$SHUTTINGDOWN" ]] && echo Firefox session file $SESSION_FILE not found && exit 1
+
+while [[ -z "$SHUTTINGDOWN" ]]; do
 	sleep 1
 	url=`lz4jsoncat $SESSION_FILE | jq -r '[.windows[].tabs[].entries[] | select( .url | contains("mozilla.org") | not )][0].url'`
 	case $url in
 		*#${START_HASH:-START})
-			if [[ -z "$PID" ]]; then
-				echo Start recording
-				node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT} &
-				PID=$!
-			fi
+			start
 			;;
 		*#${STOP_HASH:-STOP})
-			[[ -n "$PID" ]] && echo Stop recording && kill -TERM $PID && wait $PID
-			PID=
+			stop
 			;;
 		*#${EXIT_HASH:-SHUTDOWN})
-			[[ -n "$PID" ]] && echo Stop recording && kill -TERM $PID && wait $PID
-			echo Shutting down
-			exit 0
+			_shutdown
 			;;
 	esac
 done
