@@ -13,7 +13,19 @@ Prepare `.env` file with the following:
 	AWS_ACCESS_KEY_ID=AWSACCESSKEYIDINHERE
 	AWS_SECRET_ACCESS_KEY=ENTERTHEAWSSECRETACCESSKEYINTHISPOSITION
 
-Required actions on the bucket:
+**Optional variables:**
+
+| Variable                 | Description                                              | Default    |
+| ------------------------ | -------------------------------------------------------- | ---------- |
+| FF_JSCONSOLE_VISIBLE     | Pass `--jsconsole` argument to Firefox launch if not empty | `empty`     |
+| FF_DEVTOOLS_VISIBLE      | Pass `--devtools` argument to Firefox launch if not empty  | `empty`     |
+| FF_DEVTOOLS_TAB          | Set default tab in Dev Tools                             | webconsole |
+| FF_SESSIONSTORE_INTERVAL | How often session information is stored to profile (ms)  | 15000      |
+| START_HASH               | if defined, start new recording when URL hash matched    | `empty`     |
+| STOP_HASH                | if defined, stop current recording when URL hash matched | `empty`     |
+| EXIT_HASH                | if defined, exit the container when URL hash matched     | `empty`     |
+
+**Required actions on the bucket:**
 
 	s3:GetObject
 	s3:PutObject
