@@ -52,6 +52,7 @@ user_pref("permissions.default.microphone", 1);
 user_pref("permissions.default.camera", 1);
 user_pref("media.devices.insecure.enabled", true);
 user_pref("media.getusermedia.insecure.enabled", true);
+user_pref("devtools.toolbox.selectedTool", "webconsole");
 EOF
 
 # Start Firefox browser and point it at the URL we want to capture
@@ -68,10 +69,11 @@ firefox \
   --first-startup \
   --foreground \
   --kiosk \
+  ${SHOW_DEVTOOLS:+--devtools} \
+  ${SHOW_JSCONSOLE:+--jsconsole} \
   --ssb ${RECORDING_URL} \
   &
 sleep 0.5  # Ensure this has started before moving on
 xdotool mousemove 1 1 click 1  # Move mouse out of the way so it doesn't trigger the "pause" overlay on the video tile
 
 exec node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT}
-
