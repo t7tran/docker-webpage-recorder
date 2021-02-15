@@ -76,4 +76,36 @@ firefox \
 sleep 0.5  # Ensure this has started before moving on
 xdotool mousemove 1 1 click 1  # Move mouse out of the way so it doesn't trigger the "pause" overlay on the video tile
 
-exec node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT}
+[[ -z "$START_HASH" && -z "$STOP_HASH" && -z "$EXIT_HASH" ]] &&  
+	exec node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT}
+
+set +x
+
+SESSION_FILE=/tmp/foo4/sessionstore-backups/recovery.jsonlz4
+for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE ]] && break || sleep 1; done
+[[ ! -f $SESSION_FILE ]] && echo Firefox session file $SESSION_FILE not found && exit 1
+
+PID=
+while true; do
+	sleep 1
+	url=`lz4jsoncat $SESSION_FILE | jq -r '[.windows[].tabs[].entries[] | select( .url | contains("mozilla.org") | not )][0].url'`
+	case $url in
+		*#${START_HASH:-START})
+			if [[ -z "$PID" ]]; then
+				echo Start recording
+				node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT} &
+				PID=$!
+			fi
+			;;
+		*#${STOP_HASH:-STOP})
+			[[ -n "$PID" ]] && echo Stop recording && kill -TERM $PID && wait $PID
+			PID=
+			;;
+		*#${EXIT_HASH:-SHUTDOWN})
+			[[ -n "$PID" ]] && echo Stop recording && kill -TERM $PID && wait $PID
+			echo Shutting down
+			exit 0
+			;;
+	esac
+done
+
