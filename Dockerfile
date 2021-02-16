@@ -13,7 +13,9 @@ RUN groupadd -g 1000 recorder && \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     npm install && \
-    chmod +x /recording/*.sh /recording/*.js
+    chmod +x /recording/*.sh /recording/*.js && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* /tmp/*
 
 USER recorder
 
