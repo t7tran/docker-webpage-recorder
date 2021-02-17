@@ -74,7 +74,10 @@ const month = timestamp.getMonth() + 1;
 const day = timestamp.getDate();
 const hour = timestamp.getUTCHours();
 const fileName = `${year}/${month}/${day}/${hour}/${fileTimestamp}.mp4`;
-new S3Uploader(BUCKET_NAME, fileName).uploadStream(transcodeStreamToOutput.stdout);
+const tags = Object.keys(process.env)
+                   .filter(e => e.startsWith('tag_'))
+                   .map(e => ({ Key: e.substring(4), Value: process.env[e] }));
+new S3Uploader(BUCKET_NAME, fileName).uploadStream(transcodeStreamToOutput.stdout, tags);
 
 // event handler for docker stop, not exit until upload completes
 process.on('SIGTERM', (code, signal) => {

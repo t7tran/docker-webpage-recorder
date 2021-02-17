@@ -20,8 +20,8 @@ class S3Uploader {
         console.log(`[upload process] constructed a S3 object with bucket: ${this.bucket}, key: ${this.key}`);
     }
 
-    uploadStream(stream) {
-        const managedUpload = this.s3Uploader.upload({ Body: stream }, (err, data) => {
+    uploadStream(stream, tags) {
+        const managedUpload = this.s3Uploader.upload({ Body: stream }, { tags }, (err, data) => {
             if (err) {
                 console.log('[stream upload process] - failure - error handling on failure', err);
             } else {
