@@ -76,7 +76,8 @@ const hour = timestamp.getUTCHours();
 const fileName = `${year}/${month}/${day}/${hour}/${fileTimestamp}.mp4`;
 const tags = Object.keys(process.env)
                    .filter(e => e.startsWith('tag_'))
-                   .map(e => ({ Key: e.substring(4), Value: process.env[e] }));
+                   .map(e => ({ Key: e.substring(4, 132), Value: process.env[e].substring(0, 256) }))
+                   .slice(0, 50); // cap at 50 tags
 new S3Uploader(BUCKET_NAME, fileName).uploadStream(transcodeStreamToOutput.stdout, tags);
 
 // event handler for docker stop, not exit until upload completes
