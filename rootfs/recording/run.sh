@@ -1,11 +1,29 @@
 #!/bin/bash
 
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 if [[ ! -z "$WAITFOR_HOST" && ! -z "$WAITFOR_PORT" ]]; then
 	for (( i=1; i<=${TIMEOUT:-120}; i++ )); do nc -zw1 $WAITFOR_HOST $WAITFOR_PORT && break || sleep 1; done
 fi
 
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
+SIGNALS='SIGHUP SIGINT SIGQUIT SIGTERM'
+_terminating() {
+	trap - $SIGNALS 
+
+	if [[ -n "$FF_PID" ]]; then
+		sleep ${FF_SHUTDOWN_GRACE:-3} &
+		SLEEP_PID=$!
+		echo Shutdown Firefox $FF_PID
+		kill $FF_PID
+	fi
+	[[ -n "$XVFB_PID" ]] && kill $XVFB_PID
+	pulseaudio --kill &>/dev/null
+
+	wait $SLEEP_PID
+	echo Terminated
+}
+trap _terminating $SIGNALS
 
 set -xeo pipefail
 
@@ -80,22 +98,6 @@ FF_PID=$!
 echo Firefox PID $FF_PID
 sleep 0.5  # Ensure this has started before moving on
 xdotool mousemove 1 1 click 1  # Move mouse out of the way so it doesn't trigger the "pause" overlay on the video tile
-
-SIGNALS='SIGHUP SIGINT SIGQUIT SIGTERM'
-_terminating() {
-	trap - $SIGNALS 
-
-	sleep ${FF_SHUTDOWN_GRACE:-3} &
-	SLEEP_PID=$!
-
-	echo Shutdown Firefox $FF_PID
-	kill $FF_PID
-	kill $XVFB_PID
-
-	wait $SLEEP_PID
-	echo Terminated
-}
-trap _terminating $SIGNALS
 
 [[ -z "$START_HASH" && -z "$STOP_HASH" && -z "$EXIT_HASH" ]] &&  
 	exec node /recording/record.js ${S3_BUCKET_NAME} ${SCREEN_WIDTH} ${SCREEN_HEIGHT}
