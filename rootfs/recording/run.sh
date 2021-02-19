@@ -47,19 +47,11 @@ export DISPLAY=:${X_SERVER_NUM}.0
 sleep 0.5  # Ensure this has started before moving on
 
 # Create a new Firefox profile for capturing preferences for this
-firefox --no-remote --new-instance --createprofile "foo4 /tmp/foo4"
-
-# Install the OpenH264 plugin for Firefox
-mkdir -p /tmp/foo4/gmp-gmpopenh264/1.8.1.1/
-pushd /tmp/foo4/gmp-gmpopenh264/1.8.1.1 >& /dev/null
-curl -s -O http://ciscobinary.openh264.org/openh264-linux64-2e1774ab6dc6c43debb0b5b628bdf122a391d521.zip
-unzip openh264-linux64-2e1774ab6dc6c43debb0b5b628bdf122a391d521.zip
-rm -f openh264-linux64-2e1774ab6dc6c43debb0b5b628bdf122a391d521.zip
-popd >& /dev/null
+firefox --no-remote --new-instance --createprofile "foo4 /opt/firefox"
 
 # Set the Firefox preferences to enable automatic media playing with no user
 # interaction and the use of the OpenH264 plugin.
-cat <<EOF >> /tmp/foo4/prefs.js
+cat <<EOF >> /opt/firefox/prefs.js
 user_pref("media.autoplay.default", 0);
 user_pref("media.autoplay.enabled.user-gestures-needed", false);
 user_pref("media.navigator.permission.disabled", true);
@@ -132,7 +124,7 @@ _shutdown() {
 
 trap _shutdown $SIGNALS
 
-SESSION_FILE=/tmp/foo4/sessionstore-backups/recovery.jsonlz4
+SESSION_FILE=/opt/firefox/sessionstore-backups/recovery.jsonlz4
 for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE || -n "$SHUTTINGDOWN" ]] && break || sleep 1; done
 [[ ! -f $SESSION_FILE && -z "$SHUTTINGDOWN" ]] && echo Firefox session file $SESSION_FILE not found && exit 1
 
