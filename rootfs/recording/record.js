@@ -1,6 +1,9 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+const numEnv = (name, def) => Number(process.env[name]) || def;
+const env = (name, def) => process.env[name] || def;
+
 const { spawn } = require('child_process');
 const { S3Uploader } = require('./utils/upload');
 
@@ -14,12 +17,12 @@ const BROWSER_SCREEN_WIDTH = args[1];
 const BROWSER_SCREEN_HEIGHT = args[2];
 console.log(`[recording process] BROWSER_SCREEN_WIDTH: ${BROWSER_SCREEN_WIDTH}, BROWSER_SCREEN_HEIGHT: ${BROWSER_SCREEN_HEIGHT}`);
 
-const VIDEO_BITRATE = 3000;
-const VIDEO_FRAMERATE = 30;
+const VIDEO_BITRATE = numEnv('VIDEO_BITRATE', 3000);
+const VIDEO_FRAMERATE = numEnv('VIDEO_FRAMERATE', 30);
 const VIDEO_GOP = VIDEO_FRAMERATE * 2;
-const AUDIO_BITRATE = '160k';
-const AUDIO_SAMPLERATE = 44100;
-const AUDIO_CHANNELS = 2
+const AUDIO_BITRATE = env('AUDIO_BITRATE', '160k');
+const AUDIO_SAMPLERATE = numEnv('AUDIO_SAMPLERATE', 44100);
+const AUDIO_CHANNELS = numEnv('AUDIO_CHANNELS', 2);
 const DISPLAY = process.env.DISPLAY;
 
 const transcodeStreamToOutput = spawn('ffmpeg',[
@@ -64,7 +67,7 @@ const transcodeStreamToOutput = spawn('ffmpeg',[
 );
 
 transcodeStreamToOutput.stderr.on('data', data => {
-    console.log(`[transcodeStreamToOutput process] stderr: ${(new Date()).toISOString()} ffmpeg: ${data}`);
+    console.error(`[transcodeStreamToOutput process] stderr: ${(new Date()).toISOString()} ffmpeg: ${data}`);
 });
 
 const timestamp = new Date();

@@ -17,6 +17,11 @@ Prepare `.env` file with the following:
 
 | Variable                 | Description                                              | Default    |
 | ------------------------ | -------------------------------------------------------- | ---------- |
+| VIDEO_BITRATE            | Video bit rate of the recording                          | 3000       |
+| VIDEO_FRAMERATE          | Number of frame per second of the recording              | 30         |
+| AUDIO_BITRATE            | Audio bit rate of the recording                          | 160k       |
+| AUDIO_SAMPLERATE         | Audio sample rate of the recording                       | 44100      |
+| AUDIO_CHANNELS           | Number of audio channels of the recording                | 2          |
 | FF_JSCONSOLE_VISIBLE     | Pass `--jsconsole` argument to Firefox launch if not empty | `empty`     |
 | FF_DEVTOOLS_VISIBLE      | Pass `--devtools` argument to Firefox launch if not empty  | `empty`     |
 | FF_DEVTOOLS_TAB          | Set default tab in Dev Tools                             | webconsole |
