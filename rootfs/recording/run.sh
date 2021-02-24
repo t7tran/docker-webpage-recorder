@@ -46,12 +46,16 @@ pacmd set-default-source v1.monitor  # Set the monitor of the v1 sink to be the 
 echo Started PulseAudio server
 
 # Start X11 virtual framebuffer so Firefox will have somewhere to draw
-echo Starting X11
-Xvfb :${X_SERVER_NUM} -ac -screen 0 ${SCREEN_RESOLUTION}x${COLOR_DEPTH} > /dev/null 2>&1 &
-XVFB_PID=$!
-export DISPLAY=:${X_SERVER_NUM}.0
-sleep 0.5  # Ensure this has started before moving on
-echo Started X11
+if [[ -n "$DISPLAY" ]]; then
+	echo Use existing X11 at $DISPLAY
+else
+	echo Starting X11
+	Xvfb :${X_SERVER_NUM} -ac -screen 0 ${SCREEN_RESOLUTION}x${COLOR_DEPTH} > /dev/null 2>&1 &
+	XVFB_PID=$!
+	export DISPLAY=:${X_SERVER_NUM}.0
+	sleep 0.5  # Ensure this has started before moving on
+	echo Started X11
+fi
 
 # Create a new Firefox profile for capturing preferences for this
 echo Preparing Firefox profile
@@ -139,6 +143,7 @@ if [[ -z "$START_HASH" && -z "$STOP_HASH" && -z "$EXIT_HASH" ]]; then
 	exit 0
 fi
 
+set -x
 SESSION_FILE=/opt/firefox/sessionstore-backups/recovery.jsonlz4
 for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE || -n "$SHUTTINGDOWN" ]] && break || sleep 1; done
 [[ ! -f $SESSION_FILE && -z "$SHUTTINGDOWN" ]] && echo Firefox session file $SESSION_FILE not found && exit 1
