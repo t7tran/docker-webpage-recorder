@@ -143,7 +143,6 @@ if [[ -z "$START_HASH" && -z "$STOP_HASH" && -z "$EXIT_HASH" ]]; then
 	exit 0
 fi
 
-set -x
 SESSION_FILE=/opt/firefox/sessionstore-backups/recovery.jsonlz4
 for (( i=1; i<=60; i++ )); do [[ -f $SESSION_FILE || -n "$SHUTTINGDOWN" ]] && break || sleep 1; done
 [[ ! -f $SESSION_FILE && -z "$SHUTTINGDOWN" ]] && echo Firefox session file $SESSION_FILE not found && exit 1
