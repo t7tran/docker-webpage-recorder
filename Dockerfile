@@ -26,6 +26,7 @@ RUN groupadd -g 1000 recorder && \
     unzip openh264.zip && rm -f openh264.zip && \
     chown -R recorder:recorder /opt/firefox && \
 # Install node packages
+    cd /recording && \
     npm install && \
     chmod +x /recording/*.sh /recording/*.js && \
 # Clean up
