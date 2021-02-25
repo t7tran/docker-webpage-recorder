@@ -22,6 +22,7 @@ Prepare `.env` file with the following:
 | AUDIO_BITRATE            | Audio bit rate of the recording                          | 160k       |
 | AUDIO_SAMPLERATE         | Audio sample rate of the recording                       | 44100      |
 | AUDIO_CHANNELS           | Number of audio channels of the recording                | 2          |
+| AUDIO_DELAY              | Delay audio channels if it's out-of-sync with video (ms) | 0          |
 | FF_JSCONSOLE_VISIBLE     | Pass `--jsconsole` argument to Firefox launch if not empty | `empty`     |
 | FF_DEVTOOLS_VISIBLE      | Pass `--devtools` argument to Firefox launch if not empty  | `empty`     |
 | FF_DEVTOOLS_TAB          | Set default tab in Dev Tools                             | webconsole |

@@ -20,6 +20,7 @@ console.log(`[recording process] BROWSER_SCREEN_WIDTH: ${BROWSER_SCREEN_WIDTH}, 
 const VIDEO_BITRATE = numEnv('VIDEO_BITRATE', 3000);
 const VIDEO_FRAMERATE = numEnv('VIDEO_FRAMERATE', 30);
 const VIDEO_GOP = VIDEO_FRAMERATE * 2;
+const AUDIO_DELAY = numEnv('AUDIO_DELAY', 0);
 const AUDIO_BITRATE = env('AUDIO_BITRATE', '160k');
 const AUDIO_SAMPLERATE = numEnv('AUDIO_SAMPLERATE', 44100);
 const AUDIO_CHANNELS = numEnv('AUDIO_CHANNELS', 2);
@@ -53,7 +54,7 @@ const transcodeStreamToOutput = spawn('ffmpeg',[
         '-maxrate', `${VIDEO_BITRATE}`,
         '-g', `${VIDEO_GOP}`,
     // apply a fixed delay to the audio stream in order to synchronize it with the video stream
-    '-filter_complex', 'adelay=delays=1000|1000',
+    '-filter_complex', `adelay=delays=${AUDIO_DELAY}|${AUDIO_DELAY}|${AUDIO_DELAY}|${AUDIO_DELAY}`,
     // codec audio with aac
     '-c:a', 'aac',
         '-b:a', `${AUDIO_BITRATE}`,
