@@ -30,6 +30,7 @@ Prepare `.env` file with the following:
 | START_HASH               | if defined, start new recording when URL hash matched    | `empty`     |
 | STOP_HASH                | if defined, stop current recording when URL hash matched | `empty`     |
 | EXIT_HASH                | if defined, exit the container when URL hash matched     | `empty`     |
+| tag_*                    | tags to be associated with recording object (max 10)     | N/A        |
 
 **Required actions on the bucket:**
 

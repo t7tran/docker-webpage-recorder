@@ -78,10 +78,14 @@ const month = timestamp.getMonth() + 1;
 const day = timestamp.getDate();
 const hour = timestamp.getUTCHours();
 const fileName = `${year}/${month}/${day}/${hour}/${fileTimestamp}.mp4`;
-const tags = Object.keys(process.env)
-                   .filter(e => e.startsWith('tag_'))
-                   .map(e => ({ Key: e.substring(4, 132), Value: process.env[e].substring(0, 256) }))
-                   .slice(0, 50); // cap at 50 tags
+
+const tagNames = Object.keys(process.env).filter(e => e.startsWith('tag_'));
+const tags = tagNames.slice(0, 10) // cap at 10 tags - https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-tagging.html
+                   .map(e => ({ Key: e.substring(4, 132), Value: process.env[e].substring(0, 256) }));
+tagNames.slice(0, 10).forEach(e => console.log(`[recording process] stored tag ${e.substring(4, 132)}=${process.env[e]}`));
+if (tagNames.length > 10)
+    tagNames.slice(10).forEach(e => console.log(`[recording process] ignored tag ${e.substring(4, 132)}=${process.env[e]}`));
+
 new S3Uploader(BUCKET_NAME, fileName).uploadStream(transcodeStreamToOutput.stdout, tags);
 
 // event handler for docker stop, not exit until upload completes
