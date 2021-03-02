@@ -15,22 +15,27 @@ Prepare `.env` file with the following:
 
 **Optional variables:**
 
-| Variable                 | Description                                              | Default    |
-| ------------------------ | -------------------------------------------------------- | ---------- |
-| VIDEO_BITRATE            | Video bit rate of the recording                          | 3000       |
-| VIDEO_FRAMERATE          | Number of frame per second of the recording              | 30         |
-| AUDIO_BITRATE            | Audio bit rate of the recording                          | 160k       |
-| AUDIO_SAMPLERATE         | Audio sample rate of the recording                       | 44100      |
-| AUDIO_CHANNELS           | Number of audio channels of the recording                | 2          |
-| AUDIO_DELAY              | Delay audio channels if it's out-of-sync with video (ms) | 0          |
-| FF_JSCONSOLE_VISIBLE     | Pass `--jsconsole` argument to Firefox launch if not empty | `empty`     |
-| FF_DEVTOOLS_VISIBLE      | Pass `--devtools` argument to Firefox launch if not empty  | `empty`     |
-| FF_DEVTOOLS_TAB          | Set default tab in Dev Tools                             | webconsole |
-| FF_SESSIONSTORE_INTERVAL | How often session information is stored to profile (ms)  | 15000      |
-| START_HASH               | if defined, start new recording when URL hash matched    | `empty`     |
-| STOP_HASH                | if defined, stop current recording when URL hash matched | `empty`     |
-| EXIT_HASH                | if defined, exit the container when URL hash matched     | `empty`     |
-| tag_*                    | tags to be associated with recording object (max 10)     | N/A        |
+| Variable                 | Description                                              | Default                 |
+| ------------------------ | -------------------------------------------------------- | ----------------------- |
+| VIDEO_BITRATE            | Video bit rate of the recording                          | 3000                    |
+| VIDEO_FRAMERATE          | Number of frame per second of the recording              | 30                      |
+| VIDEO_PROFILE            | Video encoding [profile][1]                              | main                    |
+| VIDEO_PRESET             | Video encoding [preset][1]                               | veryfast                |
+| VIDEO_OPTIONS            | Video encoding options                                   | nal-hrd=cbr:no-scenecut |
+| AUDIO_BITRATE            | Audio bit rate of the recording                          | 160k                    |
+| AUDIO_SAMPLERATE         | Audio sample rate of the recording                       | 44100                   |
+| AUDIO_CHANNELS           | Number of audio channels of the recording                | 2                       |
+| AUDIO_DELAY              | Delay audio channels if it's out-of-sync with video (ms) | 0                       |
+| FF_JSCONSOLE_VISIBLE     | Pass `--jsconsole` argument to Firefox launch if not empty | `empty`                  |
+| FF_DEVTOOLS_VISIBLE      | Pass `--devtools` argument to Firefox launch if not empty  | `empty`                  |
+| FF_DEVTOOLS_TAB          | Set default tab in Dev Tools                             | webconsole              |
+| FF_SESSIONSTORE_INTERVAL | How often session information is stored to profile (ms)  | 15000                   |
+| START_HASH               | if defined, start new recording when URL hash matched    | `empty`                  |
+| STOP_HASH                | if defined, stop current recording when URL hash matched | `empty`                  |
+| EXIT_HASH                | if defined, exit the container when URL hash matched     | `empty`                  |
+| tag_*                    | tags to be associated with recording object (max 10)     | N/A                     |
+
+[1]: https://trac.ffmpeg.org/wiki/Encode/H.264
 
 **Required actions on the bucket:**
 

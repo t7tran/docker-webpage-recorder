@@ -20,6 +20,9 @@ console.log(`[recording process] BROWSER_SCREEN_WIDTH: ${BROWSER_SCREEN_WIDTH}, 
 const VIDEO_BITRATE = numEnv('VIDEO_BITRATE', 3000);
 const VIDEO_FRAMERATE = numEnv('VIDEO_FRAMERATE', 30);
 const VIDEO_GOP = VIDEO_FRAMERATE * 2;
+const VIDEO_PROFILE = env('VIDEO_PROFILE', 'main');
+const VIDEO_PRESET = env('VIDEO_PRESET', 'veryfast');
+const VIDEO_OPTIONS = env('VIDEO_OPTIONS', 'nal-hrd=cbr:no-scenecut');
 const AUDIO_DELAY = numEnv('AUDIO_DELAY', 0);
 const AUDIO_BITRATE = env('AUDIO_BITRATE', '160k');
 const AUDIO_SAMPLERATE = numEnv('AUDIO_SAMPLERATE', 44100);
@@ -47,9 +50,9 @@ const transcodeStreamToOutput = spawn('ffmpeg',[
     // codec video with libx264
     '-c:v', 'libx264',
         '-pix_fmt', 'yuv420p',
-        '-profile:v', 'main',
-        '-preset', 'veryfast',
-        '-x264opts', 'nal-hrd=cbr:no-scenecut',
+        '-profile:v', `${VIDEO_PROFILE}`,
+        '-preset', `${VIDEO_PRESET}`,
+        '-x264opts', `${VIDEO_OPTIONS}`,
         '-minrate', `${VIDEO_BITRATE}`,
         '-maxrate', `${VIDEO_BITRATE}`,
         '-g', `${VIDEO_GOP}`,
