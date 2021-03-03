@@ -49,7 +49,7 @@ echo Started PulseAudio server
 if [[ -n "$DISPLAY" ]]; then
 	echo Use existing X11 at $DISPLAY
 else
-	echo Starting X11
+	echo Starting X11 at ${SCREEN_RESOLUTION}x${COLOR_DEPTH}
 	Xvfb :${X_SERVER_NUM} -ac -screen 0 ${SCREEN_RESOLUTION}x${COLOR_DEPTH} > /dev/null 2>&1 &
 	XVFB_PID=$!
 	export DISPLAY=:${X_SERVER_NUM}.0

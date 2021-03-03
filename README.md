@@ -21,6 +21,7 @@ Prepare `.env` file with the following:
 | VIDEO_FRAMERATE          | Number of frame per second of the recording              | 30                      |
 | VIDEO_PROFILE            | Video encoding [profile][1]                              | main                    |
 | VIDEO_PRESET             | Video encoding [preset][1]                               | veryfast                |
+| VIDEO_TUNE               | Video encoding [tuning][1]                               | stillimage              |
 | VIDEO_OPTIONS            | Video encoding options                                   | nal-hrd=cbr:no-scenecut |
 | AUDIO_BITRATE            | Audio bit rate of the recording                          | 160k                    |
 | AUDIO_SAMPLERATE         | Audio sample rate of the recording                       | 44100                   |

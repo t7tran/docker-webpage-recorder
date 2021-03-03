@@ -22,6 +22,7 @@ const VIDEO_FRAMERATE = numEnv('VIDEO_FRAMERATE', 30);
 const VIDEO_GOP = VIDEO_FRAMERATE * 2;
 const VIDEO_PROFILE = env('VIDEO_PROFILE', 'main');
 const VIDEO_PRESET = env('VIDEO_PRESET', 'veryfast');
+const VIDEO_TUNE = env('VIDEO_TUNE', 'stillimage');
 const VIDEO_OPTIONS = env('VIDEO_OPTIONS', 'nal-hrd=cbr:no-scenecut');
 const AUDIO_DELAY = numEnv('AUDIO_DELAY', 0);
 const AUDIO_BITRATE = env('AUDIO_BITRATE', '160k');
@@ -52,6 +53,7 @@ const transcodeStreamToOutput = spawn('ffmpeg',[
         '-pix_fmt', 'yuv420p',
         '-profile:v', `${VIDEO_PROFILE}`,
         '-preset', `${VIDEO_PRESET}`,
+        '-tune', `${VIDEO_TUNE}`,
         '-x264opts', `${VIDEO_OPTIONS}`,
         '-minrate', `${VIDEO_BITRATE}`,
         '-maxrate', `${VIDEO_BITRATE}`,
