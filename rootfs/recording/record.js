@@ -82,7 +82,8 @@ const year = timestamp.getFullYear();
 const month = timestamp.getMonth() + 1;
 const day = timestamp.getDate();
 const hour = timestamp.getUTCHours();
-const fileName = `${year}/${month}/${day}/${hour}/${fileTimestamp}.mp4`;
+const filePath = env('RECORDING_PREFIX', `${year}/${month}/${day}/${hour}`);
+const fileName = `${filePath}/${fileTimestamp}.mp4`;
 
 const tagNames = Object.keys(process.env).filter(e => e.startsWith('tag_'));
 const tags = tagNames.slice(0, 10) // cap at 10 tags - https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-tagging.html

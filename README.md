@@ -35,6 +35,7 @@ Prepare `.env` file with the following:
 | STOP_HASH                | if defined, stop current recording when URL hash matched | `empty`                  |
 | EXIT_HASH                | if defined, exit the container when URL hash matched     | `empty`                  |
 | tag_*                    | tags to be associated with recording object (max 10)     | N/A                     |
+| RECORDING_PREFIX         | Prefix to recording S3 key                               | yyyy/MM/dd/HH           |
 
 [1]: https://trac.ffmpeg.org/wiki/Encode/H.264
 
